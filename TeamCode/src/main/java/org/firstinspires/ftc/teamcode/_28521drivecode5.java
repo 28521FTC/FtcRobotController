@@ -170,19 +170,6 @@ public class _28521drivecode5 extends LinearOpMode {
           topLeftServo.setPosition(0.9);
         }
         telemetry.addLine("");
-        if (!(Red > 0.75 && Green > 0.9 && Blue < 1)) {
-          telemetry.addLine("Detected: Purple");
-        } else if (Red > 0.7 && Green > 1.3 && Blue < 0.95) {
-          telemetry.addLine("Detected: Green");
-        } else {
-          telemetry.addLine("Detected: UNKNOWN");
-        }
-        telemetry.addData("red", colorLeft.red() / colorLeft_REV_ColorRangeSensor.alpha());
-        telemetry.addData("green", colorLeft.green() / colorLeft_REV_ColorRangeSensor.alpha());
-        telemetry.addData("blue", colorLeft.blue() / colorLeft_REV_ColorRangeSensor.alpha());
-        Red = colorLeft.red() / colorLeft_REV_ColorRangeSensor.alpha();
-        Green = colorLeft.green() / colorLeft_REV_ColorRangeSensor.alpha();
-        Blue = colorLeft.blue() / colorLeft_REV_ColorRangeSensor.alpha();
         telemetry.update();
         telemetryAprilTag();
         // Share the CPU.
