@@ -26,6 +26,16 @@ public class AprilTagWebCamExample extends OpMode {
     private static final double DESIRED_RANGE = 112.6; // adjust to your far back zone
     private static final double DESIRED_BEARING = 0.8; // degrees
 
+    // Constants for encoder math
+    private static final double TICKS_PER_REV = 537.7; // GoBILDA 312 RPM motor
+    private static final double WHEEL_DIAMETER_IN = 104.0 / 25.4; // 104 mm wheel
+    private static final double WHEEL_CIRCUMFERENCE_IN = Math.PI * WHEEL_DIAMETER_IN;
+
+    // Adjust for sprocket ratio: motor sprocket teeth / wheel sprocket teeth
+    private static final double SPROCKET_RATIO = 14.0 / 10.0; // change if reversed
+    private static final double TICKS_PER_INCH = (TICKS_PER_REV / WHEEL_CIRCUMFERENCE_IN) / SPROCKET_RATIO;
+
+
 
 
     @Override
@@ -40,6 +50,17 @@ public class AprilTagWebCamExample extends OpMode {
         topLeftServo= hardwareMap.get(Servo.class, "topLeftServo");
         topRightServo= hardwareMap.get(Servo.class, "topRightServo");
 
+        // Reset encoders
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Run using encoders
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void shoot() {
@@ -63,6 +84,25 @@ public class AprilTagWebCamExample extends OpMode {
         frontLeft.setPower(frontLeftPower);
         frontRight.setPower(frontRightPower);
     }
+    public void driveForwardInches(double inches, double power) {
+        int targetTicks = (int)(inches * TICKS_PER_INCH);
+
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() + targetTicks);
+        backRight.setTargetPosition(backRight.getCurrentPosition() + targetTicks);
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() + targetTicks);
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() + targetTicks);
+
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        backLeft.setPower(power);
+        backRight.setPower(power);
+        frontLeft.setPower(power);
+        frontRight.setPower(power);
+    }
+
 
     @Override
     public void loop() {
