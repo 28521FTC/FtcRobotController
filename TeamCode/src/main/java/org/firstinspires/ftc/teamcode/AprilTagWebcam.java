@@ -50,7 +50,7 @@ public class AprilTagWebcam {
         return  detectedTags;
     }
 
-    public void displayDetectedTelemetry(AprilTagDetection detectedId) {
+    public void displayDetectionTelemetry(AprilTagDetection detectedId) {
         if (detectedId == null) {return;}
         if (detectedId.metadata != null) {
             telemetry.addLine(String.format("\n==== (ID %d) %s", detectedId.id, detectedId.metadata.name));
@@ -61,6 +61,7 @@ public class AprilTagWebcam {
             telemetry.addLine(String.format("\n==== (ID %d) Unknown", detectedId.id));
             telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detectedId.center.x, detectedId.center.y));
         }
+
     }
 
     public AprilTagDetection getTagBySpecificId(int id) {

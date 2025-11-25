@@ -170,6 +170,7 @@ public class _28521drivecode5 extends LinearOpMode {
           topLeftServo.setPosition(0.9);
         }
         telemetry.addLine("");
+
         telemetry.update();
         telemetryAprilTag();
         // Share the CPU.
