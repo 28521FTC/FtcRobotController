@@ -13,7 +13,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@TeleOp(name = "_28521drivecode5 (Blocks to Java)")
+@TeleOp(name = "28521drivecode")
 public class _28521drivecode5 extends LinearOpMode {
 
   private DcMotor backLeft;
