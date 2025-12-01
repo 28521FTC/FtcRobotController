@@ -201,6 +201,10 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+                if (rangeError == 0) {
+                    drive == 0;
+                    strafe == 0;
+                    turn == 0;
             } else {
 
                 // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
