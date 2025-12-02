@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -91,7 +92,8 @@ import java.util.concurrent.TimeUnit;
 public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 50.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 75; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_YAW = -6;
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
@@ -108,6 +110,11 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
     private DcMotor frontRight = null;  //  Used to control the right front drive wheel
     private DcMotor backLeft = null;  //  Used to control the left back drive wheel
     private DcMotor backRight = null;  //  Used to control the right back drive wheel
+    private DcMotor topRight = null;
+    private Servo bottomRightServo;
+    private Servo bottomLeftServo;
+    private Servo topRightServo;
+    private Servo topLeftServo;
 
     private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
     private static final int DESIRED_TAG_ID = 20;     // Choose the tag you want to approach or set to -1 for ANY tag.
@@ -132,6 +139,12 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        topRight = hardwareMap.get(DcMotor.class, "topRight");
+        bottomRightServo = hardwareMap.get(Servo.class, "bottomRightServo");
+        bottomLeftServo = hardwareMap.get(Servo.class, "bottomLeftServo");
+        topRightServo = hardwareMap.get(Servo.class, "topRightServo");
+        topLeftServo = hardwareMap.get(Servo.class, "topLeftServo");
+
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -140,6 +153,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.FORWARD);
+        topRight.setDirection(DcMotor.Direction.REVERSE);
 
         if (USE_WEBCAM)
             setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
@@ -202,11 +216,12 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-                if (desiredTag.ftcPose.range == 50) {
+                if (desiredTag.ftcPose.range >= 74 && desiredTag.ftcPose.range <= 76); {
                     rangeError = (0);
                     headingError = (0);
                     yawError = (0);
-                    sleep(1000);
+                    sleep(300);
+                    FIRING();
                 }
             } else {
 
@@ -216,12 +231,34 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 turn   = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
                 telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
+            if (bottomRightServo.getPosition() == 0.8) {
+                sleep(1000);
+                bottomRightServo.setPosition(0.1);
+            }
+            if (bottomLeftServo.getPosition() == 0.45) {
+                bottomLeftServo.setPosition(0.85);
+            }
+            if (topRightServo.getPosition() == 1) {
+                sleep(1000);
+                topRightServo.setPosition(0.4);
+            }
+            if (topLeftServo.getPosition() == 0.56) {
+                topLeftServo.setPosition(0.9);
+            }
             telemetry.update();
 
             // Apply desired axes motions to the drivetrain.
             moveRobot(drive, strafe, -turn);
             sleep(10);
         }
+    }
+    public void FIRING() {
+        topRight.setPower(0.85);
+        sleep(1000);
+        topRightServo.setPosition(1);
+        topLeftServo.setPosition(0.56);
+        sleep(1000);
+        topRight.setPower(0);
     }
 
     /**
