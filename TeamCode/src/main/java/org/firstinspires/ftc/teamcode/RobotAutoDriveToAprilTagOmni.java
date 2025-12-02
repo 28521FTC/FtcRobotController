@@ -201,7 +201,6 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
-<<<<<<< HEAD
                 telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
                 if (desiredTag.ftcPose.range == 50) {
                     rangeError = (0);
@@ -209,13 +208,6 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                     yawError = (0);
                     sleep(1000);
                 }
-=======
-                telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-                if (rangeError == 0) {
-                    drive == 0;
-                    strafe == 0;
-                    turn == 0;
->>>>>>> 0b5ef461d3763ef1b24f7df3b0285bbc40158a61
             } else {
 
                 // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
