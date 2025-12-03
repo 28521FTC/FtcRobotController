@@ -94,8 +94,8 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
     final double DESIRED_DISTANCE = 75; //  this is how close the camera should get to the target (inches)
-    final double DESIRED_YAW = 10;
-    final double DESIRED_BEARING = 6;
+    final double DESIRED_YAW = 9;
+    final double DESIRED_BEARING = -4;
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
@@ -222,13 +222,13 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-                if (desiredTag.ftcPose.range >= 74 && desiredTag.ftcPose.range <= 76) {
+                if (desiredTag.ftcPose.range >= 73.6 && desiredTag.ftcPose.range <= 75) {
                     IN_RANGE = true;
                 }
-                if (desiredTag.ftcPose.bearing >= 3 && desiredTag.ftcPose.bearing <= 6) {
+                if (desiredTag.ftcPose.bearing >= -2.5 && desiredTag.ftcPose.bearing <= -1.5) {
                     IN_BEARING = true;
                 }
-                if (desiredTag.ftcPose.yaw >= 8 && desiredTag.ftcPose.yaw <= 10) {
+                if (desiredTag.ftcPose.yaw >= 6 && desiredTag.ftcPose.yaw <= 7.5) {
                     IN_YAW = true;
                 }
                 if (IN_RANGE && IN_YAW && IN_BEARING == true) {
