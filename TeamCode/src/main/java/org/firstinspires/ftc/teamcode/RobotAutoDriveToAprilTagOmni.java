@@ -125,6 +125,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
     @Override public void runOpMode()
     {
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+        boolean IN_RANGE        = false;
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
         double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
         double  turn            = 0;        // Desired turning power/speed (-1 to +1)
@@ -190,6 +191,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 }
             }
 
+
             // Tell the driver what we see, and what to do.
             if (targetFound) {
                 telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
@@ -216,11 +218,10 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-                if (desiredTag.ftcPose.range >= 74 && desiredTag.ftcPose.range <= 76); {
+                if (desiredTag.ftcPose.range >= 74 && desiredTag.ftcPose.range <= 76) {
                     rangeError = (0);
                     headingError = (0);
                     yawError = (0);
-                    sleep(300);
                     FIRING();
                 }
             } else {
@@ -252,8 +253,21 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
             sleep(10);
         }
     }
-    public void FIRING() {
+    private void FIRING() {
         topRight.setPower(0.85);
+        sleep(1000);
+        topRightServo.setPosition(1);
+        topLeftServo.setPosition(0.56);
+        sleep(100);
+        //MANUALY MAKE IT GO DOWN DONT RELIY ON AUTO SYSTEM FO RTHIS PART
+        sleep(1000);
+        bottomRightServo.setPosition(0.8);
+        bottomLeftServo.setPosition(0.45);
+        topRightServo.setPosition(0.3);
+        topLeftServo.setPosition(1);
+        sleep(400);
+        topRightServo.setPosition(0.4);
+        topLeftServo.setPosition(0.9);
         sleep(1000);
         topRightServo.setPosition(1);
         topLeftServo.setPosition(0.56);
