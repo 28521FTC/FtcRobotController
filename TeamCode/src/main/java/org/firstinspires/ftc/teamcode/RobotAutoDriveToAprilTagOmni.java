@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -88,12 +89,13 @@ import java.util.concurrent.TimeUnit;
  *
  */
 
-@TeleOp(name="Omni Drive To AprilTag", group = "Concept")
+@Autonomous(name="Omni Drive To AprilTag", group = "Concept")
 public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
     final double DESIRED_DISTANCE = 75; //  this is how close the camera should get to the target (inches)
-    final double DESIRED_YAW = -6;
+    final double DESIRED_YAW = 10;
+    final double DESIRED_BEARING = 6;
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
@@ -126,6 +128,8 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
     {
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
         boolean IN_RANGE        = false;
+        boolean IN_BEARING      = false;
+        boolean IN_YAW          = false;
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
         double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
         double  turn            = 0;        // Desired turning power/speed (-1 to +1)
@@ -205,12 +209,12 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 
 
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-            if (gamepad1.left_bumper && targetFound) {
+            if (targetFound) {
 
                 // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
                 double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-                double headingError = desiredTag.ftcPose.bearing;
-                double yawError = desiredTag.ftcPose.yaw;
+                double headingError = desiredTag.ftcPose.bearing - DESIRED_BEARING;
+                double yawError = desiredTag.ftcPose.yaw - DESIRED_YAW;
 
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
                 drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
@@ -219,6 +223,15 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 
                 telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
                 if (desiredTag.ftcPose.range >= 74 && desiredTag.ftcPose.range <= 76) {
+                    IN_RANGE = true;
+                }
+                if (desiredTag.ftcPose.bearing >= 3 && desiredTag.ftcPose.bearing <= 6) {
+                    IN_BEARING = true;
+                }
+                if (desiredTag.ftcPose.yaw >= 8 && desiredTag.ftcPose.yaw <= 10) {
+                    IN_YAW = true;
+                }
+                if (IN_RANGE && IN_YAW && IN_BEARING == true) {
                     rangeError = (0);
                     headingError = (0);
                     yawError = (0);
@@ -258,7 +271,9 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         sleep(1000);
         topRightServo.setPosition(1);
         topLeftServo.setPosition(0.56);
-        sleep(100);
+        sleep(200);
+        topRightServo.setPosition(0.4);
+        topLeftServo.setPosition(0.9);
         //MANUALY MAKE IT GO DOWN DONT RELIY ON AUTO SYSTEM FO RTHIS PART
         sleep(1000);
         bottomRightServo.setPosition(0.8);
