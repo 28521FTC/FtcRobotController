@@ -13,7 +13,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@TeleOp(name = "28521drivecode")
+@TeleOp(name = "28521 drivecode")
 public class _28521drivecode5 extends LinearOpMode {
 
   private DcMotor backLeft;
@@ -46,9 +46,9 @@ public class _28521drivecode5 extends LinearOpMode {
     double frontRightpower;
     double backRightpower;
 
-    y = gamepad1.left_stick_y * 1.1;
-    x = -gamepad1.left_stick_x * 1.1;
-    rx = gamepad1.right_stick_x * 1.1;
+    y = gamepad1.left_stick_y * 0.8;
+    x = -gamepad1.left_stick_x * 0.8;
+    rx = gamepad1.right_stick_x * 0.8;
     dominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
     frontLeftpower = (y + x + rx) / dominator;
     backLeftpower = (y - (x - rx)) / dominator;

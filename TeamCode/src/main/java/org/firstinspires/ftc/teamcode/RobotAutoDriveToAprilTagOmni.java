@@ -93,15 +93,15 @@ import java.util.concurrent.TimeUnit;
 public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 75; //  this is how close the camera should get to the target (inches)
-    final double DESIRED_YAW = 9;
+    final double DESIRED_DISTANCE = 76; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_YAW = 7;
     final double DESIRED_BEARING = -4;
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
     final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
+    final double STRAFE_GAIN =  0.025 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
     final double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
@@ -222,16 +222,16 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-                if (desiredTag.ftcPose.range >= 73.6 && desiredTag.ftcPose.range <= 75) {
+                if (desiredTag.ftcPose.range >= 74 && desiredTag.ftcPose.range <= 76.2) {
                     IN_RANGE = true;
                 }
-                if (desiredTag.ftcPose.bearing >= -2.5 && desiredTag.ftcPose.bearing <= -1.5) {
+                if (desiredTag.ftcPose.bearing >= -6.5 && desiredTag.ftcPose.bearing <= -3.5) {
                     IN_BEARING = true;
                 }
-                if (desiredTag.ftcPose.yaw >= 6 && desiredTag.ftcPose.yaw <= 7.5) {
+                if (desiredTag.ftcPose.yaw >= 4.5 && desiredTag.ftcPose.yaw <= 11.5) {
                     IN_YAW = true;
                 }
-                if (IN_RANGE && IN_YAW && IN_BEARING == true) {
+                if (IN_RANGE == true && IN_YAW == true && IN_BEARING == true) {
                     rangeError = (0);
                     headingError = (0);
                     yawError = (0);
