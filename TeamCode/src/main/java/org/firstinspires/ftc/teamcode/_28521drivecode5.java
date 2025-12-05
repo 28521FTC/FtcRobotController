@@ -141,7 +141,7 @@ public class _28521drivecode5 extends LinearOpMode {
           bottomLeftServo.setPosition(0.45);
           topRightServo.setPosition(0.3);
           topLeftServo.setPosition(1);
-          sleep(400);
+          sleep(600);
           topRightServo.setPosition(0.4);
           topLeftServo.setPosition(0.9);
         }

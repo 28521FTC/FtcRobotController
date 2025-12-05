@@ -93,7 +93,7 @@ import java.util.concurrent.TimeUnit;
 public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 76; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 77; //  this is how close the camera should get to the target (inches)
     final double DESIRED_YAW = 7;
     final double DESIRED_BEARING = -4;
 
@@ -133,6 +133,8 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
         double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
         double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+        long lastshottime = 0;
+        long shotcooldown = 5000;
 
         // Initialize the Apriltag Detection process
         initAprilTag();
@@ -222,7 +224,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-                if (desiredTag.ftcPose.range >= 74 && desiredTag.ftcPose.range <= 76.2) {
+                if (desiredTag.ftcPose.range >= 75 && desiredTag.ftcPose.range <= 77.2) {
                     IN_RANGE = true;
                 }
                 if (desiredTag.ftcPose.bearing >= -6.5 && desiredTag.ftcPose.bearing <= -3.5) {
@@ -267,20 +269,17 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         }
     }
     private void FIRING() {
-        topRight.setPower(0.85);
-        sleep(1000);
+        topRight.setPower(0.9);
+        sleep(1200);
         topRightServo.setPosition(1);
         topLeftServo.setPosition(0.56);
-        sleep(200);
-        topRightServo.setPosition(0.4);
-        topLeftServo.setPosition(0.9);
-        //MANUALY MAKE IT GO DOWN DONT RELIY ON AUTO SYSTEM FO RTHIS PART
+        sleep(500);
+        topRightServo.setPosition(0.3);
+        topLeftServo.setPosition(1);
         sleep(1000);
         bottomRightServo.setPosition(0.8);
         bottomLeftServo.setPosition(0.45);
-        topRightServo.setPosition(0.3);
-        topLeftServo.setPosition(1);
-        sleep(400);
+        sleep(700);
         topRightServo.setPosition(0.4);
         topLeftServo.setPosition(0.9);
         sleep(1000);
@@ -288,6 +287,10 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         topLeftServo.setPosition(0.56);
         sleep(1000);
         topRight.setPower(0);
+        backLeft.setPower(-0.2);
+        backRight.setPower(0.2);
+        frontLeft.setPower(-0.2);
+        frontRight.setPower(0.2);
     }
 
     /**
