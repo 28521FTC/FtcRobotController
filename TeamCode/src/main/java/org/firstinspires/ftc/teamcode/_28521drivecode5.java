@@ -131,16 +131,17 @@ public class _28521drivecode5 extends LinearOpMode {
           bottomRightServo.setPosition(0.1);
         }
         if (gamepad2.dpad_down) {
-          bottomRightServo.setPosition(0.8);
           frontRight.setPower(0);
           backRight.setPower(0);
           frontLeft.setPower(0);
           backLeft.setPower(0);
         }
         if (gamepad2.dpad_down) {
-          bottomLeftServo.setPosition(0.45);
           topRightServo.setPosition(0.3);
           topLeftServo.setPosition(1);
+          sleep(100);
+          bottomLeftServo.setPosition(0.3);
+          bottomRightServo.setPosition(0.8);
           sleep(600);
           topRightServo.setPosition(0.4);
           topLeftServo.setPosition(0.9);
@@ -159,7 +160,7 @@ public class _28521drivecode5 extends LinearOpMode {
           sleep(1000);
           bottomRightServo.setPosition(0.1);
         }
-        if (bottomLeftServo.getPosition() == 0.45) {
+        if (bottomLeftServo.getPosition() == 0.3) {
           bottomLeftServo.setPosition(0.85);
         }
         if (topRightServo.getPosition() == 1) {

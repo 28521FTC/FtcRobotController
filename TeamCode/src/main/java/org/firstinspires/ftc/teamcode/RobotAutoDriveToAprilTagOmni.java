@@ -126,6 +126,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 
     @Override public void runOpMode()
     {
+        boolean justFired       = false;
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
         boolean IN_RANGE        = false;
         boolean IN_BEARING      = false;
@@ -133,8 +134,6 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
         double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
         double  turn            = 0;        // Desired turning power/speed (-1 to +1)
-        long lastshottime = 0;
-        long shotcooldown = 5000;
 
         // Initialize the Apriltag Detection process
         initAprilTag();
@@ -237,7 +236,13 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                     rangeError = (0);
                     headingError = (0);
                     yawError = (0);
-                    FIRING();
+                    NEXTSTEP();
+                }
+                if (justFired) {
+                    turn = 0.2;
+                    sleep(1000);
+                    justFired = false;
+                    turn = 0;
                 }
             } else {
 
@@ -268,29 +273,31 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
             sleep(10);
         }
     }
-    private void FIRING() {
-        topRight.setPower(0.9);
-        sleep(1200);
-        topRightServo.setPosition(1);
-        topLeftServo.setPosition(0.56);
-        sleep(500);
-        topRightServo.setPosition(0.3);
-        topLeftServo.setPosition(1);
-        sleep(1000);
-        bottomRightServo.setPosition(0.8);
-        bottomLeftServo.setPosition(0.45);
-        sleep(700);
-        topRightServo.setPosition(0.4);
-        topLeftServo.setPosition(0.9);
-        sleep(1000);
-        topRightServo.setPosition(1);
-        topLeftServo.setPosition(0.56);
-        sleep(1000);
-        topRight.setPower(0);
-        backLeft.setPower(-0.2);
-        backRight.setPower(0.2);
-        frontLeft.setPower(-0.2);
-        frontRight.setPower(0.2);
+    public void NEXTSTEP() {
+        boolean justFired = false;
+        if (justFired == false) {
+            topRight.setPower(0.8);
+            sleep(1200);
+            topRightServo.setPosition(1);
+            topLeftServo.setPosition(0.56);
+            sleep(500);
+            topRightServo.setPosition(0.3);
+            topLeftServo.setPosition(1);
+            sleep(1000);
+            bottomRightServo.setPosition(0.8);
+            bottomLeftServo.setPosition(0.45);
+            sleep(700);
+            topRightServo.setPosition(0.4);
+            topLeftServo.setPosition(0.9);
+            sleep(1000);
+            topRightServo.setPosition(1);
+            topLeftServo.setPosition(0.56);
+            sleep(1000);
+            topRight.setPower(0);
+            justFired = true;
+        }
+
+
     }
 
     /**
