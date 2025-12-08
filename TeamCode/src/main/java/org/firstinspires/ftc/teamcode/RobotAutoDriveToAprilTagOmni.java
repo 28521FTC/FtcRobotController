@@ -90,8 +90,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Autonomous(name="Omni Drive To AprilTag", group = "Concept")
-public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
-{
+public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
     // Adjust these numbers to suit your robot.
     final double DESIRED_DISTANCE = 77; //  this is how close the camera should get to the target (inches)
     final double DESIRED_YAW = 7;
@@ -100,19 +99,21 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double STRAFE_GAIN =  0.025 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
-    final double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    final double SPEED_GAIN = 0.02;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double STRAFE_GAIN = 0.025;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
+    final double TURN_GAIN = 0.01;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_STRAFE = 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
     private DcMotor frontLeft = null;  //  Used to control the left front drive wheel
     private DcMotor frontRight = null;  //  Used to control the right front drive wheel
     private DcMotor backLeft = null;  //  Used to control the left back drive wheel
     private DcMotor backRight = null;  //  Used to control the right back drive wheel
     private DcMotor topRight = null;
+    private DcMotor bottomLeft;
+    private DcMotor bottomRight;
     private Servo bottomRightServo;
     private Servo bottomLeftServo;
     private Servo topRightServo;
@@ -124,16 +125,16 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
 
-    @Override public void runOpMode()
-    {
-        boolean justFired       = false;
-        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
-        boolean IN_RANGE        = false;
-        boolean IN_BEARING      = false;
-        boolean IN_YAW          = false;
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
-        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+    @Override
+    public void runOpMode() {
+        boolean justFired = false;
+        boolean targetFound = false;    // Set to true when an AprilTag target is detected
+        boolean IN_RANGE = false;
+        boolean IN_BEARING = false;
+        boolean IN_YAW = false;
+        double drive = 0;        // Desired forward power/speed (-1 to +1)
+        double strafe = 0;        // Desired strafe power/speed (-1 to +1)
+        double turn = 0;        // Desired turning power/speed (-1 to +1)
 
         // Initialize the Apriltag Detection process
         initAprilTag();
@@ -150,6 +151,8 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         bottomLeftServo = hardwareMap.get(Servo.class, "bottomLeftServo");
         topRightServo = hardwareMap.get(Servo.class, "topRightServo");
         topLeftServo = hardwareMap.get(Servo.class, "topLeftServo");
+        bottomLeft = hardwareMap.get(DcMotor.class, "bottomLeft");
+        bottomRight = hardwareMap.get(DcMotor.class, "bottomRight");
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -160,6 +163,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.FORWARD);
         topRight.setDirection(DcMotor.Direction.REVERSE);
+        bottomLeft.setDirection(DcMotor.Direction.REVERSE);
 
         if (USE_WEBCAM)
             setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
@@ -170,10 +174,9 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         telemetry.update();
         waitForStart();
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             targetFound = false;
-            desiredTag  = null;
+            desiredTag = null;
 
             // Step through the list of detected tags and look for a matching tag
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -199,13 +202,13 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 
             // Tell the driver what we see, and what to do.
             if (targetFound) {
-                telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+                telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
                 telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-                telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
-                telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-                telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+                telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+                telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+                telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
             } else {
-                telemetry.addData("\n>","Drive using joysticks to find valid target\n");
+                telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
             }
 
 
@@ -247,10 +250,10 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
             } else {
 
                 // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-                drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-                strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
-                turn   = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
-                telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+                drive = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
+                strafe = -gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
+                turn = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
+                telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
             if (bottomRightServo.getPosition() == 0.8) {
                 sleep(1000);
@@ -273,32 +276,57 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
             sleep(10);
         }
     }
-    public void NEXTSTEP() {
-        boolean justFired = false;
-        if (justFired == false) {
-            topRight.setPower(0.8);
-            sleep(1200);
-            topRightServo.setPosition(1);
-            topLeftServo.setPosition(0.56);
-            sleep(500);
-            topRightServo.setPosition(0.3);
-            topLeftServo.setPosition(1);
-            sleep(1000);
-            bottomRightServo.setPosition(0.8);
-            bottomLeftServo.setPosition(0.45);
-            sleep(700);
-            topRightServo.setPosition(0.4);
-            topLeftServo.setPosition(0.9);
-            sleep(1000);
-            topRightServo.setPosition(1);
-            topLeftServo.setPosition(0.56);
-            sleep(1000);
-            topRight.setPower(0);
-            justFired = true;
-        }
 
+    public void NEXTSTEP() {
+        topRight.setPower(0.78);
+        sleep(1200);
+        topRightServo.setPosition(1);
+        topLeftServo.setPosition(0.56);
+        sleep(500);
+        topRightServo.setPosition(0.3);
+        topLeftServo.setPosition(1);
+        sleep(1000);
+        bottomRightServo.setPosition(0.8);
+        bottomLeftServo.setPosition(0.45);
+        sleep(700);
+        topRightServo.setPosition(0.4);
+        topLeftServo.setPosition(0.9);
+        sleep(1000);
+        topRightServo.setPosition(1);
+        topLeftServo.setPosition(0.56);
+        sleep(1000);
+        topRight.setPower(0);
+        frontLeft.setPower(-0.2);
+        backLeft.setPower(-0.2);
+        frontRight.setPower(0.2);
+        backRight.setPower(0.2);
+        sleep(1950);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+        sleep(10);
+        frontLeft.setPower(-0.2);
+        backLeft.setPower(-0.2);
+        frontRight.setPower(-0.2);
+        backRight.setPower(-0.2);
+        sleep(1000);
+        frontLeft.setPower(0.2);
+        backLeft.setPower(0.2);
+        frontRight.setPower(-0.2);
+        backRight.setPower(-0.2);
+        sleep(300);
+        frontLeft.setPower(-0.2);
+        backLeft.setPower(-0.2);
+        frontRight.setPower(-0.2);
+        backRight.setPower(-0.2);
+        bottomLeft.setPower(0.8);
+        bottomRight.setPower(0.8);
+        sleep();
 
     }
+
+
 
     /**
      * Move robot according to desired axes motions
