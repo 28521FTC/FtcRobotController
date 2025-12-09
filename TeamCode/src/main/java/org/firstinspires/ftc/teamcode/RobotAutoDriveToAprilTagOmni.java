@@ -132,10 +132,12 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         boolean IN_RANGE = false;
         boolean IN_BEARING = false;
         boolean IN_YAW = false;
+        boolean PGP = false;
+        boolean PPG = false;
+        boolean GPP = false;
         double drive = 0;        // Desired forward power/speed (-1 to +1)
         double strafe = 0;        // Desired strafe power/speed (-1 to +1)
         double turn = 0;        // Desired turning power/speed (-1 to +1)
-
         // Initialize the Apriltag Detection process
         initAprilTag();
 
@@ -177,7 +179,6 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         while (opModeIsActive()) {
             targetFound = false;
             desiredTag = null;
-
             // Step through the list of detected tags and look for a matching tag
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
             for (AprilTagDetection detection : currentDetections) {
@@ -189,6 +190,12 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                         targetFound = true;
                         desiredTag = detection;
                         break;  // don't look any further.
+                    } else if (detection.id == 21) {
+                        GPP = true;
+                    } else if (detection.id == 22) {
+                        PGP = true;
+                    } else if (detection.id == 23) {
+                        PPG = true;
                     } else {
                         // This tag is in the library, but we do not want to track it right now.
                         telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
@@ -239,13 +246,16 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     rangeError = (0);
                     headingError = (0);
                     yawError = (0);
-                    NEXTSTEP();
-                }
-                if (justFired) {
-                    turn = 0.2;
-                    sleep(1000);
-                    justFired = false;
-                    turn = 0;
+                    if (GPP = true) {
+                        GPPFIRE();
+                        telemetry.addData("Obolisk ID:", "GPP");
+                    } else if (PGP = true) {
+                        PGPFIRE();
+                        telemetry.addData("Obolisk ID:", "PGP");
+                    } else if (PPG = true) {
+                        PPGFIRE();
+                        telemetry.addData("Obolisk ID:", "PPG");
+                    }
                 }
             } else {
 
@@ -277,7 +287,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         }
     }
 
-    public void NEXTSTEP() {
+    public void GPPFIRE() {
         topRight.setPower(0.78);
         sleep(1200);
         topRightServo.setPosition(1);
@@ -306,24 +316,66 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         frontRight.setPower(0);
         backRight.setPower(0);
         sleep(10);
-        frontLeft.setPower(-0.2);
-        backLeft.setPower(-0.2);
-        frontRight.setPower(-0.2);
-        backRight.setPower(-0.2);
+    }
+    public void PGPFIRE() {
+        topRight.setPower(0.78);
+        sleep(1200);
+        topRightServo.setPosition(1);
+        topLeftServo.setPosition(0.56);
+        sleep(500);
+        topRightServo.setPosition(0.3);
+        topLeftServo.setPosition(1);
         sleep(1000);
-        frontLeft.setPower(0.2);
-        backLeft.setPower(0.2);
-        frontRight.setPower(-0.2);
-        backRight.setPower(-0.2);
-        sleep(300);
+        bottomRightServo.setPosition(0.8);
+        bottomLeftServo.setPosition(0.45);
+        sleep(700);
+        topRightServo.setPosition(0.4);
+        topLeftServo.setPosition(0.9);
+        sleep(1000);
+        topRightServo.setPosition(1);
+        topLeftServo.setPosition(0.56);
+        sleep(1000);
+        topRight.setPower(0);
         frontLeft.setPower(-0.2);
         backLeft.setPower(-0.2);
-        frontRight.setPower(-0.2);
-        backRight.setPower(-0.2);
-        bottomLeft.setPower(0.8);
-        bottomRight.setPower(0.8);
-        sleep();
-
+        frontRight.setPower(0.2);
+        backRight.setPower(0.2);
+        sleep(1950);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+        sleep(10);
+    }
+    public void PPGFIRE() {
+        topRight.setPower(0.78);
+        sleep(1200);
+        topRightServo.setPosition(1);
+        topLeftServo.setPosition(0.56);
+        sleep(500);
+        topRightServo.setPosition(0.3);
+        topLeftServo.setPosition(1);
+        sleep(1000);
+        bottomRightServo.setPosition(0.8);
+        bottomLeftServo.setPosition(0.45);
+        sleep(700);
+        topRightServo.setPosition(0.4);
+        topLeftServo.setPosition(0.9);
+        sleep(1000);
+        topRightServo.setPosition(1);
+        topLeftServo.setPosition(0.56);
+        sleep(1000);
+        topRight.setPower(0);
+        frontLeft.setPower(-0.2);
+        backLeft.setPower(-0.2);
+        frontRight.setPower(0.2);
+        backRight.setPower(0.2);
+        sleep(1950);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+        sleep(10);
     }
 
 
