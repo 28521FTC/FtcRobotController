@@ -177,6 +177,12 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            if (GPP)
+                telemetry.addData("Obolisk ID:", "GPP");
+            if (PGP)
+                telemetry.addData("Obolisk ID:", "PGP");
+            if (PPG)
+                telemetry.addData("Obolisk ID:", "PPG");
             targetFound = false;
             desiredTag = null;
             // Step through the list of detected tags and look for a matching tag
@@ -184,18 +190,21 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
             for (AprilTagDetection detection : currentDetections) {
                 // Look to see if we have size info on this tag.
                 if (detection.metadata != null) {
+                    if (detection.id == 21) {
+                        GPP = true;
+                    } else if (detection.id == 22) {
+                        PGP = true;
+                    } else if (detection.id == 23) {
+                        PPG = true;
+                    }
+                }
+                if (detection.metadata != null) {
                     //  Check to see if we want to track towards this tag.
                     if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
                         // Yes, we want to use this tag.
                         targetFound = true;
                         desiredTag = detection;
                         break;  // don't look any further.
-                    } else if (detection.id == 21) {
-                        GPP = true;
-                    } else if (detection.id == 22) {
-                        PGP = true;
-                    } else if (detection.id == 23) {
-                        PPG = true;
                     } else {
                         // This tag is in the library, but we do not want to track it right now.
                         telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
@@ -233,7 +242,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-                if (desiredTag.ftcPose.range >= 75 && desiredTag.ftcPose.range <= 77.2) {
+                if (desiredTag.ftcPose.range >= (DESIRED_DISTANCE - 2) && desiredTag.ftcPose.range <= (DESIRED_DISTANCE + 0.4)) {
                     IN_RANGE = true;
                 }
                 if (desiredTag.ftcPose.bearing >= -6.5 && desiredTag.ftcPose.bearing <= -3.5) {
@@ -246,15 +255,89 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     rangeError = (0);
                     headingError = (0);
                     yawError = (0);
-                    if (GPP = true) {
-                        GPPFIRE();
-                        telemetry.addData("Obolisk ID:", "GPP");
-                    } else if (PGP = true) {
-                        PGPFIRE();
-                        telemetry.addData("Obolisk ID:", "PGP");
-                    } else if (PPG = true) {
-                        PPGFIRE();
-                        telemetry.addData("Obolisk ID:", "PPG");
+                    sleep(100);
+                    if (GPP == true) {
+                        topRight.setPower(0.8);
+                        sleep(1200);
+                        topRightServo.setPosition(1);
+                        topLeftServo.setPosition(0.56);
+                        sleep(500);
+                        topRightServo.setPosition(0.3);
+                        topLeftServo.setPosition(1);
+                        sleep(1000);
+                        bottomRightServo.setPosition(0.8);
+                        bottomLeftServo.setPosition(0.45);
+                        sleep(700);
+                        topRightServo.setPosition(0.4);
+                        topLeftServo.setPosition(0.9);
+                        sleep(1000);
+                        topRightServo.setPosition(1);
+                        topLeftServo.setPosition(0.56);
+                        sleep(1000);
+                        topRight.setPower(0);
+                        frontLeft.setPower(-0.2);
+                        backLeft.setPower(-0.2);
+                        frontRight.setPower(0.2);
+                        backRight.setPower(0.2);
+                        sleep(1950);
+                        frontLeft.setPower(0);
+                        backLeft.setPower(0);
+                        frontRight.setPower(0);
+                        backRight.setPower(0);
+                        sleep(10);
+                    } else if (PGP == true) {
+                        topRight.setPower(0.8);
+                        sleep(1200);
+                        topRightServo.setPosition(1);
+                        topLeftServo.setPosition(0.56);
+                        sleep(500);
+                        topRightServo.setPosition(0.3);
+                        topLeftServo.setPosition(1);
+                        sleep(1000);
+                        bottomRightServo.setPosition(0.8);
+                        bottomLeftServo.setPosition(0.45);
+                        sleep(700);
+                        topRightServo.setPosition(0.4);
+                        topLeftServo.setPosition(0.9);
+                        sleep(1000);
+                        topRightServo.setPosition(1);
+                        topLeftServo.setPosition(0.56);
+                        sleep(1000);
+                        topRight.setPower(0);
+                        frontLeft.setPower(-0.2);
+                        backLeft.setPower(-0.2);
+                        frontRight.setPower(0.2);
+                        backRight.setPower(0.2);
+                        sleep(1950);
+                        frontLeft.setPower(0);
+                        backLeft.setPower(0);
+                        frontRight.setPower(0);
+                        backRight.setPower(0);
+                        sleep(10);
+                    } else if (PPG == true) {
+                        topRight.setPower(0.8);
+                        sleep(1200);
+                        topRightServo.setPosition(1);
+                        topLeftServo.setPosition(0.56);
+                        sleep(500);
+                        topRightServo.setPosition(0.3);
+                        topLeftServo.setPosition(1);
+                        sleep(1000);
+                        bottomRightServo.setPosition(0.8);
+                        bottomLeftServo.setPosition(0.45);
+                        sleep(700);
+                        topRightServo.setPosition(0.4);
+                        topLeftServo.setPosition(0.9);
+                        sleep(1000);
+                        topRightServo.setPosition(1);
+                        topLeftServo.setPosition(0.56);
+                        sleep(1000);
+                        topRight.setPower(0);
+                        turn = -0.2;
+                        telemetry.addLine("im doing PPG");
+                        sleep(800);
+                        turn = 0;
+                        sleep(10);
                     }
                 }
             } else {
@@ -316,6 +399,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         frontRight.setPower(0);
         backRight.setPower(0);
         sleep(10);
+
     }
     public void PGPFIRE() {
         topRight.setPower(0.78);
