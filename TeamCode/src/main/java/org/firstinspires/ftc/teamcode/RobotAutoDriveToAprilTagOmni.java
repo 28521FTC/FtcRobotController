@@ -279,23 +279,33 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     moveRobot(0, 0, 0.3);
                     sleep(500);
                     moveRobot(0,0,0);
-                    sleep(1000);
-                    moveRobot(0,0,0.3);
-                    sleep(900);
-                    moveRobot(0,0,0);
                     if (GPP == true) {
-
-                    } else if (PGP == true) {
-
-                    } else if (PPG == true) {
+                        telemetry.addLine("im doing GPP");
+                        moveRobot(0, 0, 0.3);
+                        sleep(900);
+                        moveRobot(0, 0, 0);
+                        sleep(1000);
+                    }
+                    if (PGP == true) {
+                        telemetry.addLine("im doing PGP");
+                        moveRobot(0, 0, 0.3);
+                        sleep(900);
+                        moveRobot(0, 0, 0);
+                        sleep(1000);
+                    }
+                    if (PPG == true) {
                         telemetry.addLine("im doing PPG");
+                        moveRobot(0,0,0.3);
+                        sleep(900);
+                        moveRobot(0,0,0);
+                        sleep(1000);
                         moveRobot(0,0.4,0);
-                        sleep(500);
+                        sleep(570);
                         moveRobot(-0.5,0,0);
                         bottomRight.setPower(0.8);
                         bottomLeft.setPower(0.8);
                         bottomRightServo.setPosition(0.03);
-                        sleep(1500);
+                        sleep(1200);
                         bottomRightServo.setPosition(0.1);
                         moveRobot(0.5,0,0);
                         bottomRight.setPower(0);
@@ -303,10 +313,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                         sleep(500);
                         moveRobot(0,0,-0.5);
                         sleep(300);
-                        moveRobot(0,0.3,0);
-                        sleep(300);
                         moveRobot(0,0,0);
-
                     }
                 }
             } else {
