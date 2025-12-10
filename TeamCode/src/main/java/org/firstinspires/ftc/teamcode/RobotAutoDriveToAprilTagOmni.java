@@ -175,7 +175,11 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
         waitForStart();
-
+        if (opModeIsActive()) {
+            moveRobot(0.2,0,-0.2);
+            sleep(200);
+            moveRobot(0,0,0);
+        }
         while (opModeIsActive()) {
             if (GPP)
                 telemetry.addData("Obolisk ID:", "GPP");
@@ -277,34 +281,34 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     moveRobot(0, 0, 0.3);
                     sleep(500);
                     moveRobot(0,0,0);
-                    sleep(500);
+                    sleep(1000);
                     moveRobot(0,0,0.3);
-                    sleep(1000);
-                    moveRobot(0,0.5,0);
-                    sleep(600);
-                    moveRobot(-0.5,0,0);
-                    bottomRight.setPower(0.8);
-                    bottomLeft.setPower(0.8);
-                    bottomRightServo.setPosition(0.03);
-                    sleep(1000);
-                    bottomRightServo.setPosition(0.1);
-                    moveRobot(0.5,0,0);
-                    bottomRight.setPower(0);
-                    bottomLeft.setPower(0);
-                    sleep(500);
-                    moveRobot(0,0.5,0);
-                    sleep(300);
+                    sleep(900);
                     moveRobot(0,0,0);
-                    // acedentally put this on the wrong 
                     if (GPP == true) {
 
                     } else if (PGP == true) {
 
                     } else if (PPG == true) {
                         telemetry.addLine("im doing PPG");
-                        moveRobot(-2, 0, 0);
-                        sleep(10);
-                        moveRobot(0, 0, 0);
+                        moveRobot(0,0.4,0);
+                        sleep(500);
+                        moveRobot(-0.5,0,0);
+                        bottomRight.setPower(0.8);
+                        bottomLeft.setPower(0.8);
+                        bottomRightServo.setPosition(0.03);
+                        sleep(1500);
+                        bottomRightServo.setPosition(0.1);
+                        moveRobot(0.5,0,0);
+                        bottomRight.setPower(0);
+                        bottomLeft.setPower(0);
+                        sleep(500);
+                        moveRobot(0,0,-0.5);
+                        sleep(300);
+                        moveRobot(0,0.3,0);
+                        sleep(300);
+                        moveRobot(0,0,0);
+
                     }
                 }
             } else {
