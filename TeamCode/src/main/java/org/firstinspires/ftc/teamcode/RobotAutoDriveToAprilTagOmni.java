@@ -256,9 +256,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     IN_YAW = true;
                 }
                 if (IN_RANGE == true && IN_YAW == true && IN_BEARING == true) {
-                    rangeError = (0);
-                    headingError = (0);
-                    yawError = (0);
+                    moveRobot(0,0,0);
                     sleep(100);
                     topRight.setPower(0.8);
                     sleep(1200);
