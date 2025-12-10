@@ -275,16 +275,27 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     sleep(1000);
                     topRight.setPower(0);
                     moveRobot(0, 0, 0.3);
-                    sleep(400);
+                    sleep(500);
                     moveRobot(0,0,0);
-                    sleep(100);
+                    sleep(500);
                     moveRobot(0,0,0.3);
                     sleep(1000);
                     moveRobot(0,0.5,0);
-                    sleep(400);
+                    sleep(600);
                     moveRobot(-0.5,0,0);
-                    sleep(100);
+                    bottomRight.setPower(0.8);
+                    bottomLeft.setPower(0.8);
+                    bottomRightServo.setPosition(0.03);
+                    sleep(1000);
+                    bottomRightServo.setPosition(0.1);
+                    moveRobot(0.5,0,0);
+                    bottomRight.setPower(0);
+                    bottomLeft.setPower(0);
+                    sleep(500);
+                    moveRobot(0,0.5,0);
+                    sleep(300);
                     moveRobot(0,0,0);
+                    // acedentally put this on the wrong 
                     if (GPP == true) {
 
                     } else if (PGP == true) {
