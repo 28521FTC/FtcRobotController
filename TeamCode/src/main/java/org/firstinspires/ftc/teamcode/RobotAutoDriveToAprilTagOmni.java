@@ -281,43 +281,45 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     moveRobot(0, 0, 0);
                     justFired = true;
                 }
-
-                if (GPP == true && justFired) {
-                    telemetry.addLine("im doing GPP");
-                    moveRobot(0, 0, 0.3);
-                    sleep(900);
-                    moveRobot(0, 0, 0);
-                    sleep(1000);
-                    justFired = false;
-                } else if (PGP == true && justFired) {
-                    telemetry.addLine("im doing PGP");
-                    moveRobot(0, 0, 0.3);
-                    sleep(900);
-                    moveRobot(0, 0, 0);
-                    sleep(1000);
-                    justFired = false;
-                } else if (PPG == true && justFired) {
-                    telemetry.addLine("im doing PPG");
-                    moveRobot(0, 0, 0.3);
-                    sleep(900);
-                    moveRobot(0, 0, 0);
-                    sleep(1000);
-                    moveRobot(0, 0.4, 0);
-                    sleep(500);
-                    moveRobot(-0.5, 0, 0);
-                    bottomRight.setPower(0.8);
-                    bottomLeft.setPower(0.8);
-                    bottomRightServo.setPosition(0.1);
-                    sleep(1200);
-                    bottomRightServo.setPosition(0.03);
-                    moveRobot(0.5, 0, 0);
-                    bottomRight.setPower(0);
-                    bottomLeft.setPower(0);
-                    sleep(500);
-                    moveRobot(0, 0, -0.5);
-                    sleep(300);
-                    moveRobot(0, 0, 0);
-                    justFired = false;
+                if (justFired) {
+                    if (GPP == true) {
+                        telemetry.addLine("im doing GPP");
+                        moveRobot(0, 0, 0.3);
+                        sleep(900);
+                        moveRobot(0, 0, 0);
+                        sleep(1000);
+                        justFired = false;
+                    } else if (PGP == true) {
+                        telemetry.addLine("im doing PGP");
+                        moveRobot(0, 0, 0.3);
+                        sleep(900);
+                        moveRobot(0, 0, 0);
+                        sleep(1000);
+                        justFired = false;
+                    } else if (PPG == true) {
+                        telemetry.addLine("im doing PPG");
+                        moveRobot(0, 0, 0.3);
+                        bottomLeftServo.setPosition(0.85);
+                        sleep(900);
+                        moveRobot(0, 0, 0);
+                        sleep(1000);
+                        moveRobot(0, 0.4, 0);
+                        sleep(500);
+                        moveRobot(-0.5, 0, 0);
+                        bottomRight.setPower(0.8);
+                        bottomLeft.setPower(0.8);
+                        bottomRightServo.setPosition(0.1);
+                        sleep(1400);
+                        bottomRightServo.setPosition(0.03);
+                        moveRobot(0.5, 0, 0);
+                        bottomRight.setPower(0);
+                        bottomLeft.setPower(0);
+                        sleep(500);
+                        moveRobot(0, 0.3, -0.5);
+                        sleep(500);
+                        moveRobot(0, 0, 0);
+                        justFired = false;
+                    }
                 }
             } else {
 
@@ -349,97 +351,6 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         }
     }
 
-    public void GPPFIRE() {
-        topRight.setPower(0.78);
-        sleep(1200);
-        topRightServo.setPosition(1);
-        topLeftServo.setPosition(0.56);
-        sleep(500);
-        topRightServo.setPosition(0.3);
-        topLeftServo.setPosition(1);
-        sleep(1000);
-        bottomRightServo.setPosition(0.8);
-        bottomLeftServo.setPosition(0.45);
-        sleep(700);
-        topRightServo.setPosition(0.4);
-        topLeftServo.setPosition(0.9);
-        sleep(1000);
-        topRightServo.setPosition(1);
-        topLeftServo.setPosition(0.56);
-        sleep(1000);
-        topRight.setPower(0);
-        frontLeft.setPower(-0.2);
-        backLeft.setPower(-0.2);
-        frontRight.setPower(0.2);
-        backRight.setPower(0.2);
-        sleep(1950);
-        frontLeft.setPower(0);
-        backLeft.setPower(0);
-        frontRight.setPower(0);
-        backRight.setPower(0);
-        sleep(10);
-
-    }
-    public void PGPFIRE() {
-        topRight.setPower(0.78);
-        sleep(1200);
-        topRightServo.setPosition(1);
-        topLeftServo.setPosition(0.56);
-        sleep(500);
-        topRightServo.setPosition(0.3);
-        topLeftServo.setPosition(1);
-        sleep(1000);
-        bottomRightServo.setPosition(0.8);
-        bottomLeftServo.setPosition(0.45);
-        sleep(700);
-        topRightServo.setPosition(0.4);
-        topLeftServo.setPosition(0.9);
-        sleep(1000);
-        topRightServo.setPosition(1);
-        topLeftServo.setPosition(0.56);
-        sleep(1000);
-        topRight.setPower(0);
-        frontLeft.setPower(-0.2);
-        backLeft.setPower(-0.2);
-        frontRight.setPower(0.2);
-        backRight.setPower(0.2);
-        sleep(1950);
-        frontLeft.setPower(0);
-        backLeft.setPower(0);
-        frontRight.setPower(0);
-        backRight.setPower(0);
-        sleep(10);
-    }
-    public void PPGFIRE() {
-        topRight.setPower(0.78);
-        sleep(1200);
-        topRightServo.setPosition(1);
-        topLeftServo.setPosition(0.56);
-        sleep(500);
-        topRightServo.setPosition(0.3);
-        topLeftServo.setPosition(1);
-        sleep(1000);
-        bottomRightServo.setPosition(0.8);
-        bottomLeftServo.setPosition(0.45);
-        sleep(700);
-        topRightServo.setPosition(0.4);
-        topLeftServo.setPosition(0.9);
-        sleep(1000);
-        topRightServo.setPosition(1);
-        topLeftServo.setPosition(0.56);
-        sleep(1000);
-        topRight.setPower(0);
-        frontLeft.setPower(-0.2);
-        backLeft.setPower(-0.2);
-        frontRight.setPower(0.2);
-        backRight.setPower(0.2);
-        sleep(1950);
-        frontLeft.setPower(0);
-        backLeft.setPower(0);
-        frontRight.setPower(0);
-        backRight.setPower(0);
-        sleep(10);
-    }
 
 
 
