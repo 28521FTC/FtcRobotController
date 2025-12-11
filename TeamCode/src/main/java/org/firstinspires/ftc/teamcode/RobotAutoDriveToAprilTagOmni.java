@@ -255,8 +255,8 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                 if (desiredTag.ftcPose.yaw >= 4.5 && desiredTag.ftcPose.yaw <= 11.5) {
                     IN_YAW = true;
                 }
-                if (IN_RANGE == true && IN_YAW == true && IN_BEARING == true) {
-                    moveRobot(0,0,0);
+                if (IN_RANGE == true && IN_YAW == true && IN_BEARING == true && !justFired) {
+                    moveRobot(0, 0, 0);
                     sleep(100);
                     topRight.setPower(0.8);
                     sleep(1200);
@@ -278,43 +278,46 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     topRight.setPower(0);
                     moveRobot(0, 0, 0.3);
                     sleep(500);
-                    moveRobot(0,0,0);
-                    if (GPP == true) {
-                        telemetry.addLine("im doing GPP");
-                        moveRobot(0, 0, 0.3);
-                        sleep(900);
-                        moveRobot(0, 0, 0);
-                        sleep(1000);
-                    }
-                    if (PGP == true) {
-                        telemetry.addLine("im doing PGP");
-                        moveRobot(0, 0, 0.3);
-                        sleep(900);
-                        moveRobot(0, 0, 0);
-                        sleep(1000);
-                    }
-                    if (PPG == true) {
-                        telemetry.addLine("im doing PPG");
-                        moveRobot(0,0,0.3);
-                        sleep(900);
-                        moveRobot(0,0,0);
-                        sleep(1000);
-                        moveRobot(0,0.4,0);
-                        sleep(570);
-                        moveRobot(-0.5,0,0);
-                        bottomRight.setPower(0.8);
-                        bottomLeft.setPower(0.8);
-                        bottomRightServo.setPosition(0.03);
-                        sleep(1200);
-                        bottomRightServo.setPosition(0.1);
-                        moveRobot(0.5,0,0);
-                        bottomRight.setPower(0);
-                        bottomLeft.setPower(0);
-                        sleep(500);
-                        moveRobot(0,0,-0.5);
-                        sleep(300);
-                        moveRobot(0,0,0);
-                    }
+                    moveRobot(0, 0, 0);
+                    justFired = true;
+                }
+
+                if (GPP == true && justFired) {
+                    telemetry.addLine("im doing GPP");
+                    moveRobot(0, 0, 0.3);
+                    sleep(900);
+                    moveRobot(0, 0, 0);
+                    sleep(1000);
+                    justFired = false;
+                } else if (PGP == true && justFired) {
+                    telemetry.addLine("im doing PGP");
+                    moveRobot(0, 0, 0.3);
+                    sleep(900);
+                    moveRobot(0, 0, 0);
+                    sleep(1000);
+                    justFired = false;
+                } else if (PPG == true && justFired) {
+                    telemetry.addLine("im doing PPG");
+                    moveRobot(0, 0, 0.3);
+                    sleep(900);
+                    moveRobot(0, 0, 0);
+                    sleep(1000);
+                    moveRobot(0, 0.4, 0);
+                    sleep(500);
+                    moveRobot(-0.5, 0, 0);
+                    bottomRight.setPower(0.8);
+                    bottomLeft.setPower(0.8);
+                    bottomRightServo.setPosition(0.1);
+                    sleep(1200);
+                    bottomRightServo.setPosition(0.03);
+                    moveRobot(0.5, 0, 0);
+                    bottomRight.setPower(0);
+                    bottomLeft.setPower(0);
+                    sleep(500);
+                    moveRobot(0, 0, -0.5);
+                    sleep(300);
+                    moveRobot(0, 0, 0);
+                    justFired = false;
                 }
             } else {
 
