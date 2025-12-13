@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -94,7 +95,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
     // Adjust these numbers to suit your robot.
     final double DESIRED_DISTANCE = 77; //  this is how close the camera should get to the target (inches)
     final double DESIRED_YAW = 7;
-    final double DESIRED_BEARING = -4;
+    final double DESIRED_BEARING = -2;
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
@@ -127,6 +128,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        ElapsedTime obeliskTimer = new ElapsedTime();
         boolean justFired = false;
         boolean targetFound = false;    // Set to true when an AprilTag target is detected
         boolean IN_RANGE = false;
@@ -135,6 +137,10 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
         boolean PGP = false;
         boolean PPG = false;
         boolean GPP = false;
+        boolean waitingForObelisk = false;
+        boolean fired = false;
+        boolean obeliskExecuted = false;
+        double obeliskStartTime = 0;
         double drive = 0;        // Desired forward power/speed (-1 to +1)
         double strafe = 0;        // Desired strafe power/speed (-1 to +1)
         double turn = 0;        // Desired turning power/speed (-1 to +1)
@@ -189,35 +195,40 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                 telemetry.addData("Obolisk ID:", "PPG");
             targetFound = false;
             desiredTag = null;
-            // Step through the list of detected tags and look for a matching tag
-            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-            for (AprilTagDetection detection : currentDetections) {
-                // Look to see if we have size info on this tag.
-                if (detection.metadata != null) {
-                    if (detection.id == 21) {
-                        GPP = true;
-                    } else if (detection.id == 22) {
-                        PGP = true;
-                    } else if (detection.id == 23) {
-                        PPG = true;
-                    }
-                }
-                if (detection.metadata != null) {
-                    //  Check to see if we want to track towards this tag.
-                    if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-                        // Yes, we want to use this tag.
-                        targetFound = true;
-                        desiredTag = detection;
-                        break;  // don't look any further.
-                    } else {
-                        // This tag is in the library, but we do not want to track it right now.
-                        telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
-                    }
-                } else {
-                    // This tag is NOT in the library, so we don't have enough information to track to it.
-                    telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
-                }
+            if (!fired) {
+                GPP = false;
+                PGP = false;
+                PPG = false;
             }
+                // Step through the list of detected tags and look for a matching tag
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+                for (AprilTagDetection detection : currentDetections) {
+                    // Look to see if we have size info on this tag.
+                    if (detection.metadata != null) {
+                        if (detection.id == 21) {
+                            GPP = true;
+                        } else if (detection.id == 22) {
+                            PGP = true;
+                        } else if (detection.id == 23) {
+                            PPG = true;
+                        }
+                    }
+                    if (detection.metadata != null) {
+                        //  Check to see if we want to track towards this tag.
+                        if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                            // Yes, we want to use this tag.
+                            targetFound = true;
+                            desiredTag = detection;
+                            break;  // don't look any further.
+                        } else {
+                            // This tag is in the library, but we do not want to track it right now.
+                            telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        }
+                    } else {
+                        // This tag is NOT in the library, so we don't have enough information to track to it.
+                        telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                    }
+                }
 
 
             // Tell the driver what we see, and what to do.
@@ -255,7 +266,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                 if (desiredTag.ftcPose.yaw >= 4.5 && desiredTag.ftcPose.yaw <= 11.5) {
                     IN_YAW = true;
                 }
-                if (IN_RANGE == true && IN_YAW == true && IN_BEARING == true && !justFired) {
+                if (IN_RANGE == true && IN_YAW == true && IN_BEARING == true && !fired) {
                     moveRobot(0, 0, 0);
                     sleep(100);
                     topRight.setPower(0.8);
@@ -277,48 +288,58 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
                     sleep(1000);
                     topRight.setPower(0);
                     moveRobot(0, 0, 0.3);
+                    sleep(550);
+                    moveRobot(0, -0.2, 0);
                     sleep(500);
-                    moveRobot(0, 0, 0);
-                    justFired = true;
+                    moveRobot(0,0,0);
+                    fired = true;
+
+// Wait here until we detect an obelisk tag
+                    while (!GPP && !PGP && !PPG && opModeIsActive()) {
+                        telemetry.addData("Status", "Waiting for obelisk detection...");
+                        telemetry.update();
+
+                        // Keep detecting tags
+                        currentDetections = aprilTag.getDetections();
+                        for (AprilTagDetection detection : currentDetections) {
+                            if (detection.metadata != null) {
+                                if (detection.id == 21) {
+                                    GPP = true;
+                                } else if (detection.id == 22) {
+                                    PGP = true;
+                                } else if (detection.id == 23) {
+                                    PPG = true;
+                                }
+                            }
+                        }
+                        sleep(50); // Small delay to avoid overwhelming the processor
+                    }
+
+                    telemetry.addData("Status", "Obelisk detected! Executing sequence...");
+                    telemetry.update();
+                    obeliskExecuted = false;
                 }
-                if (justFired) {
-                    if (GPP == true) {
-                        telemetry.addLine("im doing GPP");
-                        moveRobot(0, 0, 0.3);
-                        sleep(900);
-                        moveRobot(0, 0, 0);
-                        sleep(1000);
-                        justFired = false;
-                    } else if (PGP == true) {
-                        telemetry.addLine("im doing PGP");
-                        moveRobot(0, 0, 0.3);
-                        sleep(900);
-                        moveRobot(0, 0, 0);
-                        sleep(1000);
-                        justFired = false;
-                    } else if (PPG == true) {
-                        telemetry.addLine("im doing PPG");
-                        moveRobot(0, 0, 0.3);
-                        bottomLeftServo.setPosition(0.85);
-                        sleep(900);
-                        moveRobot(0, 0, 0);
-                        sleep(1000);
-                        moveRobot(0, 0.4, 0);
-                        sleep(500);
-                        moveRobot(-0.5, 0, 0);
-                        bottomRight.setPower(0.8);
-                        bottomLeft.setPower(0.8);
-                        bottomRightServo.setPosition(0.1);
-                        sleep(1400);
-                        bottomRightServo.setPosition(0.03);
-                        moveRobot(0.5, 0, 0);
-                        bottomRight.setPower(0);
-                        bottomLeft.setPower(0);
-                        sleep(500);
-                        moveRobot(0, 0.3, -0.5);
-                        sleep(500);
-                        moveRobot(0, 0, 0);
-                        justFired = false;
+                if (fired && !obeliskExecuted) {
+                    if (!GPP && !PGP && !PPG) {
+                        moveRobot(0,0,0);
+                        telemetry.addData("Obelisk Detection", "null");
+                    } else {
+                        if (GPP == true) {
+                            telemetry.addLine("im doing GPP");
+                            GPPFIRING();
+                            fired = false;
+                            obeliskExecuted = true;
+                        } else if (PGP == true) {
+                            telemetry.addLine("im doing PGP");
+                            PGPFIRING();
+                            fired = false;
+                            obeliskExecuted = true;
+                        } else if (PPG == true) {
+                            telemetry.addLine("im doing PPG");
+                            PPGFIRING();
+                            fired = false;
+                            obeliskExecuted = true;
+                        }
                     }
                 }
             } else {
@@ -345,10 +366,55 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode {
             }
             telemetry.update();
 
-            // Apply desired axes motions to the drivetrain.
+            // Apply desired axes motions to the driverain.
             moveRobot(drive, strafe, -turn);
             sleep(10);
         }
+    }
+    public void PPGFIRING() {
+        moveRobot(0, 0, 0.4);
+        bottomLeftServo.setPosition(0.85);
+        sleep(500);
+        moveRobot(0, 0, 0);
+        sleep(1000);
+        moveRobot(0, 0.3, 0);
+        sleep(500);
+        moveRobot(0,0,0);
+        moveRobot(-0.4, 0, 0);
+        bottomRight.setPower(0.8);
+        bottomLeft.setPower(0.8);
+        bottomRightServo.setPosition(0.1);
+        sleep(2000);
+        moveRobot(0.5, 0, 0);
+        sleep(500);
+        moveRobot(0, 0, -0.5);
+        sleep(500);
+        moveRobot(-0.4, 0, 0);
+        sleep(400);
+        moveRobot(0,-0.4,0);
+        bottomRight.setPower(0);
+        bottomLeft.setPower(0);
+        bottomRightServo.setPosition(0.03);
+        sleep(600);
+        moveRobot(0,0,0);
+    }
+    public void PGPFIRING() {
+        moveRobot(0, 0, 0.3);
+        sleep(900);
+        moveRobot(0, 0, 0);
+        sleep(1000);
+        moveRobot(0,0.4,0);
+        sleep(300);
+
+    }
+    public void GPPFIRING() {
+        moveRobot(0, 0, 0.3);
+        sleep(900);
+        moveRobot(0, 0, 0);
+        sleep(1000);
+        moveRobot(0,0.4,0);
+        sleep(1200);
+
     }
 
 
