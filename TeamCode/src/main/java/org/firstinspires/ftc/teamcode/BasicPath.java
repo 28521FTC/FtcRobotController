@@ -31,7 +31,7 @@ public class BasicPath extends OpMode {
     }
     PathState pathState;
     private final Pose startPose = new Pose(60.78504672897196,2.6915887850467293, Math.toRadians(90));
-    private final Pose shootPose = new Pose(59.813,9.757, Math.toRadians(115));
+    private final Pose shootPose = new Pose(59.813,9.757, Math.toRadians(110));
     private PathChain driveStartShootPos;
     public void buildPaths() {
         driveStartShootPos = follower.pathBuilder()
