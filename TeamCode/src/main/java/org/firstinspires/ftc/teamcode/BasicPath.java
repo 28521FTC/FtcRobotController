@@ -64,6 +64,8 @@ public class BasicPath extends OpMode {
     @Override
     public void init() {
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "topRight");
+        hoodServo = hardwareMap.get(Servo.class, "hoodServo");
+
 
         pathState = PathState.DRIVE_STARTPOS_SHOOT_POS;
         pathTimer = new Timer();
