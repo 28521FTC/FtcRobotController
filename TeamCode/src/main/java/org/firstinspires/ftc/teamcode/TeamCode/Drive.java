@@ -88,7 +88,7 @@ public class Drive extends OpMode {
         do_something4();
         do_something();
         if (gamepad2.dpad_up) {
-            hoodServo.setPosition(0.08);
+            hoodServo.setPosition(0.12);
         }
         if (gamepad2.dpad_down) {
             hoodServo.setPosition(0.34);

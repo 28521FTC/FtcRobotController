@@ -41,14 +41,14 @@ public class SmallBlue extends OpMode {
         END
     }
     PathState pathState;
-    private final Pose startPose = new Pose(60.78504672897196,2.6915887850467293, Math.toRadians(90));
+    private final Pose startPose = new Pose(83.21495327102804,2.6915887850467293, Math.toRadians(90));
     private final Pose endPose = new Pose(72,50, Math.toRadians(90));
 
-    private final Pose shootPose = new Pose(59.813,9.757, Math.toRadians(110));
-    private final Pose pickupStation1Start = new Pose(46.644859813084125,35.5,Math.toRadians(180));
-    private final Pose pickupStation1End = new Pose(8,35.5,Math.toRadians(180));
-    private final Pose pickupStation3Start = new Pose(46.644859813084125,84.5,Math.toRadians(180));
-    private final Pose pickupStation3End = new Pose(14,84.5,Math.toRadians(180));
+    private final Pose shootPose = new Pose(84.187,9.757, Math.toRadians(70));
+    private final Pose pickupStation1Start = new Pose(97.35514018691588,33,Math.toRadians(0));
+    private final Pose pickupStation1End = new Pose(136,33,Math.toRadians(0));
+    private final Pose pickupStation3Start = new Pose(97.35514018691588,84.5,Math.toRadians(0));
+    private final Pose pickupStation3End = new Pose(130,84.5,Math.toRadians(0));
 
 
     private PathChain driveStartShootPos;
@@ -74,7 +74,7 @@ public class SmallBlue extends OpMode {
                 .setLinearHeadingInterpolation(pickupStation3Start.getHeading(),pickupStation3End.getHeading())
                 .build();
         driveShootPos1 = follower.pathBuilder()
-                .addPath(new BezierLine(pickupStation1End,shootPose))
+                .addPath(new BezierLine(pickupStation1End,endPose))
                 .setLinearHeadingInterpolation(pickupStation1End.getHeading(),shootPose.getHeading())
                 .build();
         driveShootPos3 = follower.pathBuilder()
@@ -97,7 +97,7 @@ public class SmallBlue extends OpMode {
                 if (!follower.isBusy()) {
                     hoodServo.setPosition(0.08);
                     flywheelMotor.setPower(1);
-                    transferMotor.setPower(0.3);
+                    transferMotor.setPower(0.2);
                     if (pathTimer.getElapsedTimeSeconds() >= 6) {
                         flywheelMotor.setPower(0);
                         transferMotor.setPower(0);
@@ -107,7 +107,7 @@ public class SmallBlue extends OpMode {
                 }
                 break;
             case SHOOT_1:
-                follower.followPath(driveShootPos1);
+                follower.followPath(driveShootPos1,true);
                 if (!follower.isBusy()) {
                     hoodServo.setPosition(0.08);
                     flywheelMotor.setPower(1);

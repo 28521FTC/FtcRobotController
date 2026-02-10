@@ -95,14 +95,17 @@ public class SmallRed extends OpMode {
                 break;
             case SHOOT_PRELOAD:
                 if (!follower.isBusy()) {
-                    hoodServo.setPosition(0.08);
+                    hoodServo.setPosition(0.12);
                     flywheelMotor.setPower(1);
-                    transferMotor.setPower(0.3);
-                    if (pathTimer.getElapsedTimeSeconds() >= 6) {
-                        flywheelMotor.setPower(0);
-                        transferMotor.setPower(0);
-                        pathState = PathState.RELOAD1;
-                        setPathState(PathState.RELOAD1);
+                    if (pathTimer.getElapsedTimeSeconds() >= 1.5) {
+                        transferMotor.setPower(0.3);
+                        pathTimer.resetTimer();
+                        if (pathTimer.getElapsedTimeSeconds() >= 5) {
+                            flywheelMotor.setPower(0);
+                            transferMotor.setPower(0);
+                            pathState = PathState.RELOAD1;
+                            setPathState(PathState.RELOAD1);
+                    }
                     }
                 }
                 break;
@@ -111,12 +114,15 @@ public class SmallRed extends OpMode {
                 if (!follower.isBusy()) {
                     hoodServo.setPosition(0.08);
                     flywheelMotor.setPower(1);
-                    transferMotor.setPower(0.3);
-                    if (pathTimer.getElapsedTimeSeconds() >= 6) {
-                        flywheelMotor.setPower(0);
-                        transferMotor.setPower(0);
-                        pathState = PathState.RELOAD3;
-                        setPathState(PathState.RELOAD3);
+                    if (pathTimer.getElapsedTimeSeconds() >= 1.5) {
+                        transferMotor.setPower(0.3);
+                        pathTimer.resetTimer();
+                        if (pathTimer.getElapsedTimeSeconds() >= 5) {
+                            flywheelMotor.setPower(0);
+                            transferMotor.setPower(0);
+                            pathState = PathState.RELOAD3;
+                            setPathState(PathState.RELOAD3);
+                        }
                     }
                 }
                 break;
@@ -125,12 +131,15 @@ public class SmallRed extends OpMode {
                 if (!follower.isBusy()) {
                     hoodServo.setPosition(0.08);
                     flywheelMotor.setPower(1);
-                    transferMotor.setPower(0.3);
-                    if (pathTimer.getElapsedTimeSeconds() >= 6) {
-                        flywheelMotor.setPower(0);
-                        transferMotor.setPower(0);
-                        pathState = PathState.RELOAD3;
-                        setPathState(PathState.RELOAD3);
+                    if (pathTimer.getElapsedTimeSeconds() >= 1.5) {
+                        transferMotor.setPower(0.3);
+                        pathTimer.resetTimer();
+                        if (pathTimer.getElapsedTimeSeconds() >= 5) {
+                            flywheelMotor.setPower(0);
+                            transferMotor.setPower(0);
+                            pathState = PathState.RELOAD3;
+                            setPathState(PathState.RELOAD3);
+                        }
                     }
                 }
                 break;
