@@ -95,10 +95,13 @@ public class Drive extends OpMode {
         }
         if (gamepad2.left_bumper) {
             transferMotor.setPower(0.4);
+            ballStopper.setPosition(1);
         } else if (gamepad2.right_bumper) {
             transferMotor.setPower(-0.4);
+            ballStopper.setPosition(0);
         } else {
             transferMotor.setPower(0);
+            ballStopper.setPosition(0.5);
         }
         if (gamepad2.left_trigger >= 0.1) {
             inTake.setPower(1);

@@ -98,7 +98,7 @@ public class SmallRed extends OpMode {
                     hoodServo.setPosition(0.12);
                     flywheelMotor.setPower(1);
                     if (pathTimer.getElapsedTimeSeconds() >= 1.5) {
-                        transferMotor.setPower(0.3);
+                        transferMotor.setPower(0.5);
                         pathTimer.resetTimer();
                         if (pathTimer.getElapsedTimeSeconds() >= 5) {
                             flywheelMotor.setPower(0);
@@ -115,7 +115,7 @@ public class SmallRed extends OpMode {
                     hoodServo.setPosition(0.08);
                     flywheelMotor.setPower(1);
                     if (pathTimer.getElapsedTimeSeconds() >= 1.5) {
-                        transferMotor.setPower(0.3);
+                        transferMotor.setPower(0.5);
                         pathTimer.resetTimer();
                         if (pathTimer.getElapsedTimeSeconds() >= 5) {
                             flywheelMotor.setPower(0);
@@ -132,7 +132,7 @@ public class SmallRed extends OpMode {
                     hoodServo.setPosition(0.08);
                     flywheelMotor.setPower(1);
                     if (pathTimer.getElapsedTimeSeconds() >= 1.5) {
-                        transferMotor.setPower(0.3);
+                        transferMotor.setPower(0.5);
                         pathTimer.resetTimer();
                         if (pathTimer.getElapsedTimeSeconds() >= 5) {
                             flywheelMotor.setPower(0);

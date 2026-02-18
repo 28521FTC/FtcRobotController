@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class Drivetest extends OpMode {
-    public double highVelocity = 2300;
-    public double lowVelocity = 1900;
+    public double highVelocity = 1300;
+    public double lowVelocity = 100;
     double curTargetVelocity = highVelocity;
     double F = 0;
     double P = 0;
@@ -23,7 +23,13 @@ public class Drivetest extends OpMode {
     private DcMotor frontRight;
     private DcMotor inTake;
     private DcMotorEx flywheelMotor;
+    private DcMotorEx flywheelMotor2;
+
+    private DcMotor transferMotor;
+
     private Servo hoodServo;
+    private Servo ballStopper;
+
 
     private void do_something4() {
         double y;
@@ -37,7 +43,7 @@ public class Drivetest extends OpMode {
 
         y = gamepad1.left_stick_y * 0.8;
         x = -gamepad1.left_stick_x * 0.8;
-        rx = gamepad1.right_stick_x * 0.8;
+        rx = -gamepad1.right_stick_x * 0.8;
         dominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         frontLeftpower = (y + x + rx) / dominator;
         backLeftpower = (y - (x - rx)) / dominator;
@@ -49,20 +55,9 @@ public class Drivetest extends OpMode {
         frontRight.setPower(frontRightpower);
     }
 
-    private void do_something() {
-        float StickRightY;
-        double StickLeftY;
-
-        StickRightY = gamepad2.right_stick_y * 1;
-        StickLeftY = gamepad2.left_stick_y * 0.85;
-        if (StickRightY < StickLeftY) {
-            flywheelMotor.setPower(StickLeftY);
-        } else if (StickLeftY < StickRightY) {
-            flywheelMotor.setPower(StickRightY);
-        }
-    }
     @Override
     public void init() {
+        ballStopper = hardwareMap.get(Servo.class, "ballStopper");
         hoodServo = hardwareMap.get(Servo.class, "hoodServo");
         inTake = hardwareMap.get(DcMotor.class, "inTake");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
@@ -70,21 +65,35 @@ public class Drivetest extends OpMode {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "topRight");
+        flywheelMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
+        transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
+        transferMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         inTake.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheelMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        flywheelMotor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
-        flywheelMotor.setDirection(DcMotor.Direction.REVERSE);
+        flywheelMotor2.setDirection(DcMotor.Direction.FORWARD);
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        flywheelMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
         telemetry.addLine("Init complete");
     }
 
     @Override
     public void loop() {
         do_something4();
-        do_something();
+        if (gamepad2.left_bumper) {
+            transferMotor.setPower(0.4);
+            ballStopper.setPosition(1);
+        } else if (gamepad2.right_bumper) {
+            transferMotor.setPower(-0.4);
+            ballStopper.setPosition(0);
+        } else {
+            transferMotor.setPower(0);
+            ballStopper.setPosition(0.5);
+        }
         if (gamepad1.yWasPressed()) {
             if (curTargetVelocity == highVelocity) {
                 curTargetVelocity = lowVelocity;
@@ -123,8 +132,11 @@ public class Drivetest extends OpMode {
 
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        flywheelMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+
 
         flywheelMotor.setVelocity(curTargetVelocity);
+        flywheelMotor2.setVelocity(curTargetVelocity);
 
         double curVelocity = flywheelMotor.getVelocity();
         double error = curTargetVelocity - curVelocity;
