@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeamCode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,12 +10,13 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
+@Disabled
 public class Drivetest extends OpMode {
     public double highVelocity = 1300;
-    public double lowVelocity = 100;
+    public double lowVelocity = 900;
     double curTargetVelocity = highVelocity;
-    double F = 0;
-    double P = 0;
+    double F = 28;
+    double P = 30;
     double[] stepSizes = {10, 1.0, 0.1, 0.01, 0.001};
     int stepIndex = 1;
     private DcMotor backLeft;
@@ -68,7 +70,7 @@ public class Drivetest extends OpMode {
         flywheelMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
         transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
         transferMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        inTake.setDirection(DcMotorSimple.Direction.REVERSE);
+        inTake.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheelMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         flywheelMotor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         backRight.setDirection(DcMotor.Direction.REVERSE);

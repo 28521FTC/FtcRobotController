@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.TeamCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -88,6 +89,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Autonomous(name="Omni Drivetest To AprilTag RED", group = "Concept")
+@Disabled
 public class RobotAutoDriveToAprilTagOmniRED extends LinearOpMode {
     // Adjust these numbers to suit your robot.
     final double DESIRED_DISTANCE = 77; //  this is how close the camera should get to the target (inches)

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous
+@Disabled
+
 public class smalltrianglered extends  LinearOpMode {
     private DcMotor backLeft;
     private DcMotor backRight;

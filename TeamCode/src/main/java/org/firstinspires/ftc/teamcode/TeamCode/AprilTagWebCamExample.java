@@ -1,17 +1,30 @@
 package org.firstinspires.ftc.teamcode.TeamCode;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous
+@TeleOp
+@Disabled
 public class AprilTagWebCamExample extends OpMode {
     AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
-    private DcMotor backLeft, backRight, frontLeft, frontRight;
-    private DcMotor shooterMotor;
-    private Servo topLeftServo, topRightServo;
+    private DcMotor backLeft, backRight, frontLeft, frontRight, inTake, transferMotor;
+    private DcMotorEx flywheelMotor, flywheelMotor2;
+    private Servo ballStopper, hoodServo;
+    public double highVelocity = 1300;
+    public double lowVelocity = 900;
+    double curTargetVelocity = highVelocity;
+    double F = 28;
+    double P = 30;
 
     // Encoder constants
     private static final double TICKS_PER_REV = 537.7; // GoBILDA 312 RPM
@@ -41,18 +54,28 @@ public class AprilTagWebCamExample extends OpMode {
     public void init() {
         aprilTagWebcam.init(hardwareMap, telemetry);
 
-        backLeft  = hardwareMap.get(DcMotor.class, "backLeft");
+        ballStopper = hardwareMap.get(Servo.class, "ballStopper");
+        hoodServo = hardwareMap.get(Servo.class, "hoodServo");
+        inTake = hardwareMap.get(DcMotor.class, "inTake");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight= hardwareMap.get(DcMotor.class, "frontRight");
-        shooterMotor = hardwareMap.get(DcMotor.class, "topRight"); // your shooter motor
-        topLeftServo = hardwareMap.get(Servo.class, "topLeftServo");
-        topRightServo= hardwareMap.get(Servo.class, "topRightServo");
-
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        flywheelMotor = hardwareMap.get(DcMotorEx.class, "topRight");
+        flywheelMotor2 = hardwareMap.get(DcMotorEx.class, "shooterMotor2");
+        transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
+        transferMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        inTake.setDirection(DcMotorSimple.Direction.FORWARD);
+        flywheelMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        flywheelMotor2.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
-
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheelMotor2.setDirection(DcMotor.Direction.FORWARD);
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
+        flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        flywheelMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
         resetEncoders();
     }
 
@@ -76,11 +99,14 @@ public class AprilTagWebCamExample extends OpMode {
         resetEncoders();
     }
 
-    private void shoot() {
+    private void shoot() throws InterruptedException {
         telemetry.addLine("Firing!");
-        shooterMotor.setPower(0.9);
-        topLeftServo.setPosition(0.56);
-        topRightServo.setPosition(1.0);
+        flywheelMotor.setVelocity(curTargetVelocity);
+        hoodServo.setPosition(0.4);
+        transferMotor.setPower(1);
+        ballStopper.setPosition(1);
+        sleep(1000);
+        ballStopper.setPosition(0.5);
     }
 
     private void driveForwardInches(double inches, double power) {
@@ -188,7 +214,11 @@ public class AprilTagWebCamExample extends OpMode {
                 break;
 
             case FIRE:
-                shoot();
+                try {
+                    shoot();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 currentState = AutoState.DONE;
                 break;
 
